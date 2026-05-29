@@ -40,6 +40,8 @@ WCAG 2.2 AA was a primary focus throughout:
 - Error states use icon + text + border color (not color alone)
 - `useId()` for stable, SSR-safe ID generation
 
+For accessibility design and implementation decisions, I borrowed heavily from one of my favorite talks on React forms by Kateryna Porshnieva called "Building Accessible Forms in React" -- I watched it a couple years ago and still refer back to it whenever I'm building forms in React. [Watch the talk here](https://www.youtube.com/watch?v=gxwJCF8dqh8).
+
 ## Tradeoffs / With More Time
 
 - No unit tests yet -- would prioritize testing validation logic and draft persistence
