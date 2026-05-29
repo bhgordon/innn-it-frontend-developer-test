@@ -48,3 +48,6 @@ For accessibility design and implementation decisions, I borrowed heavily from o
 - The close button is decorative per the spec (modal never closes), so it's hidden from assistive tech. In a real app it would need to be functional and accessible
 - No focus management on validation failure -- ideally the first invalid field would receive focus
 - Would consider extracting the success/error alert pattern into a shared component
+- The cancel confirmation uses `window.confirm` (browser default styling) -- would replace with a custom modal for a more polished UX
+- Would add clearer UX for draft management so users can see where their in-progress drafts are saved and easily return to them
+- Since these are updates to existing petitions, the title field could be a dropdown of the user's petitions rather than free text -- linking the update to its parent petition
