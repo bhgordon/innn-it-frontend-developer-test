@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { ErrorIcon } from "./ErrorIcon";
 import { TitleField } from "./TitleField";
 import { ContentField } from "./ContentField";
@@ -8,6 +8,9 @@ import { AuthorSection } from "./AuthorSection";
 
 export function UpdateModal() {
   const headingId = useId();
+  const titleRef = useRef<HTMLInputElement>(null);
+  const contentRef = useRef<HTMLTextAreaElement>(null);
+  const authorRef = useRef<HTMLInputElement>(null);
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -88,7 +91,12 @@ export function UpdateModal() {
     }
 
     setErrors(newErrors);
-    if (Object.keys(newErrors).length > 0) return;
+    if (Object.keys(newErrors).length > 0) {
+      if (newErrors.title) titleRef.current?.focus();
+      else if (newErrors.content) contentRef.current?.focus();
+      else if (newErrors.author) authorRef.current?.focus();
+      return;
+    }
 
     setSuccessMessage({ text: "Update wurde erfolgreich veröffentlicht.", type: "publish" });
   }
@@ -128,6 +136,7 @@ export function UpdateModal() {
       <form onSubmit={(e) => e.preventDefault()}>
         <div className="mt-6 space-y-6">
           <TitleField
+            ref={titleRef}
             value={title}
             onChange={(v) => {
               setTitle(v);
@@ -136,6 +145,7 @@ export function UpdateModal() {
             error={errors.title}
           />
           <ContentField
+            ref={contentRef}
             value={content}
             onChange={(v) => {
               setContent(v);
@@ -144,6 +154,7 @@ export function UpdateModal() {
             error={errors.content}
           />
           <AuthorSection
+            ref={authorRef}
             authorName={authorName}
             onAuthorChange={(v) => {
               setAuthorName(v);

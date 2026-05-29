@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { type Ref, useId } from "react";
 import { ErrorIcon } from "./ErrorIcon";
 
 interface AuthorSectionProps {
@@ -7,6 +7,7 @@ interface AuthorSectionProps {
   isEditable: boolean;
   onToggle: () => void;
   error?: string;
+  ref?: Ref<HTMLInputElement>;
 }
 
 export function AuthorSection({
@@ -15,6 +16,7 @@ export function AuthorSection({
   isEditable,
   onToggle,
   error,
+  ref,
 }: AuthorSectionProps) {
   const authorId = useId();
   const errorId = useId();
@@ -60,6 +62,7 @@ export function AuthorSection({
         )}
       </label>
       <input
+        ref={ref}
         id={authorId}
         type="text"
         value={authorName}
