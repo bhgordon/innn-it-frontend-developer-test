@@ -59,7 +59,7 @@ export function ContentField({
         ) : (
           <span />
         )}
-        <p id={counterId} className="text-neutral-500">
+        <p id={counterId} className="shrink-0 ps-2 text-neutral-500">
           {value.length.toLocaleString("de-DE")} / 10.000 Zeichen
         </p>
       </div>
