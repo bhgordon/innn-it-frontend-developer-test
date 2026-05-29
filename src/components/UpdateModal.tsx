@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { TitleField } from "./TitleField";
 import { ContentField } from "./ContentField";
 import { AuthorSection } from "./AuthorSection";
@@ -23,6 +23,20 @@ export function UpdateModal() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [successMessage, setSuccessMessage] = useState("");
 
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("petition-update-draft");
+      if (!saved) return;
+      const draft = JSON.parse(saved);
+      if (draft.title) setTitle(draft.title);
+      if (draft.content) setContent(draft.content);
+      if (draft.author) {
+        setAuthorName(draft.author);
+        setIsAuthorEditable(true);
+      }
+    } catch { /* ignore corrupted data */ }
+  }, []);
+
   function clearFieldError(field: string) {
     setErrors((prev) => {
       if (!prev[field]) return prev;
@@ -34,6 +48,25 @@ export function UpdateModal() {
   }
 
   function handleSaveDraft() {
+    setSuccessMessage("");
+    setErrors({});
+
+    const data = {
+      title: title.trim(),
+      content: content.trim(),
+      author: authorName.trim(),
+      savedAt: new Date().toISOString(),
+    };
+
+    try {
+      localStorage.setItem("petition-update-draft", JSON.stringify(data));
+      setSuccessMessage("Entwurf wurde erfolgreich gespeichert.");
+    } catch {
+      setErrors({ save: "Entwurf konnte nicht gespeichert werden." });
+    }
+  }
+
+  function handlePublish() {
     setSuccessMessage("");
     const newErrors: Record<string, string> = {};
 
@@ -50,19 +83,7 @@ export function UpdateModal() {
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 
-    const draft = {
-      title: title.trim(),
-      content: content.trim(),
-      author: authorName.trim(),
-      savedAt: new Date().toISOString(),
-    };
-
-    try {
-      localStorage.setItem("petition-update-draft", JSON.stringify(draft));
-      setSuccessMessage("Entwurf wurde erfolgreich gespeichert.");
-    } catch {
-      setErrors({ save: "Entwurf konnte nicht gespeichert werden." });
-    }
+    setSuccessMessage("Update wurde erfolgreich veröffentlicht.");
   }
 
   return (
@@ -181,6 +202,7 @@ export function UpdateModal() {
           </button>
           <button
             type="button"
+            onClick={handlePublish}
             className="rounded-full bg-orange-500 px-6 py-2.5 font-medium text-white transition-colors hover:bg-orange-600"
           >
             Update veröffentlichen
@@ -190,9 +212,40 @@ export function UpdateModal() {
         {successMessage && (
           <div
             role="alert"
-            className="mt-4 rounded-lg border border-green-300 bg-green-50 p-4 text-sm text-green-700"
+            className="mt-4 flex items-center justify-between rounded-lg border border-green-300 bg-green-50 p-4 text-sm text-green-700"
           >
-            {successMessage}
+            <p className="flex items-center gap-1.5">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="h-5 w-5 shrink-0"
+                aria-hidden="true"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              {successMessage}
+            </p>
+            <button
+              type="button"
+              onClick={() => setSuccessMessage("")}
+              className="ml-4 shrink-0 rounded-full p-0.5 text-green-700 hover:text-green-900 transition-colors"
+              aria-label="Meldung schließen"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="h-4 w-4"
+                aria-hidden="true"
+              >
+                <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+              </svg>
+            </button>
           </div>
         )}
       </form>
