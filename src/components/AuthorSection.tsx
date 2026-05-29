@@ -31,13 +31,13 @@ export function AuthorSection({
         >
           <span
             aria-hidden="true"
-            className={`relative inline-flex h-6 w-11 shrink-0 rounded-full transition-colors ${
+            className={`relative inline-flex h-5 w-9 shrink-0 rounded-full border border-neutral-800 transition-colors ${
               isEditable ? "bg-violet-300" : "bg-neutral-200"
             }`}
           >
             <span
-              className={`mt-0.5 inline-block h-5 w-5 rounded-full bg-white shadow transition-transform ${
-                isEditable ? "translate-x-5" : "translate-x-0.5"
+              className={`mt-0.5 inline-block h-3.5 w-3.5 rounded-full border border-neutral-800 bg-white transition-transform ${
+                isEditable ? "translate-x-4" : "translate-x-0.5"
               }`}
             />
           </span>
@@ -45,7 +45,7 @@ export function AuthorSection({
         </button>
       </div>
 
-      <p className="mt-2 text-sm text-neutral-500">
+      <p className="mt-2 text-sm text-neutral-700">
         Hier hast du die Option, das Update unter einem anderen Namen zu
         veröffentlichen.
       </p>
@@ -72,7 +72,7 @@ export function AuthorSection({
         className={`mt-1 w-full rounded-lg px-4 py-2.5 outline-none transition-colors focus:ring-2 focus:ring-violet-300 ${
           isEditable
             ? `border-2 bg-white text-neutral-900 ${error ? "border-red-500" : "border-neutral-800"}`
-            : "border border-neutral-800 bg-neutral-200 text-neutral-500"
+            : "cursor-not-allowed border border-neutral-800 bg-neutral-200 text-neutral-600"
         }`}
       />
       {error && (
