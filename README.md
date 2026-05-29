@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Petition Update Creator
 
-## Getting Started
+A petition update creation form built with React and TypeScript for the innn.it frontend developer challenge.
 
-First, run the development server:
+## Setup
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Opens at [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Next.js 16 (App Router)
+- React 19
+- TypeScript
+- Tailwind CSS 4
 
-## Learn More
+## Technical Decisions
 
-To learn more about Next.js, take a look at the following resources:
+**Component structure** -- Each form section (TitleField, ContentField, AuthorSection) is its own component. They own their internal wiring (IDs, label/input associations) and receive only value, onChange, and error from the parent. UpdateModal handles state and validation logic.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Fonts** -- Soehne is self-hosted as woff2 files rather than loaded from the external CSS endpoint. Avoids a runtime dependency on an external server and gives us `font-display: swap` control.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Draft persistence** -- Drafts are saved to localStorage on "Entwurf speichern" and restored on page load via `useEffect` to avoid SSR hydration mismatches.
 
-## Deploy on Vercel
+**Validation** -- Required field validation runs on "Update veröffentlichen". Save draft stores data without validation. Errors are cleared per-field as the user types.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Accessibility
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+WCAG 2.2 AA was a primary focus throughout:
+
+- `lang="de"` for correct screen reader pronunciation
+- `aria-required`, `aria-invalid`, and `aria-describedby` for form field state
+- `aria-hidden` on decorative elements (asterisks, toggle visuals, close button)
+- `role="alert"` for error summaries and success messages
+- `role="switch"` with `aria-checked` for the author toggle
+- Error states use icon + text + border color (not color alone)
+- `useId()` for stable, SSR-safe ID generation
+
+## Tradeoffs / With More Time
+
+- No unit tests yet -- would prioritize testing validation logic and draft persistence
+- The close button is decorative per the spec (modal never closes), so it's hidden from assistive tech. In a real app it would need to be functional and accessible
+- No focus management on validation failure -- ideally the first invalid field would receive focus
+- Would consider extracting the success/error alert pattern into a shared component

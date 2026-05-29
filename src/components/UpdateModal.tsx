@@ -1,20 +1,13 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
+import { ErrorIcon } from "./ErrorIcon";
 import { TitleField } from "./TitleField";
 import { ContentField } from "./ContentField";
 import { AuthorSection } from "./AuthorSection";
 
 export function UpdateModal() {
   const headingId = useId();
-  const titleId = useId();
-  const titleCounterId = useId();
-  const titleErrorId = useId();
-  const contentId = useId();
-  const contentCounterId = useId();
-  const contentErrorId = useId();
-  const authorId = useId();
-  const authorErrorId = useId();
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -126,10 +119,7 @@ export function UpdateModal() {
               setTitle(v);
               clearFieldError("title");
             }}
-            id={titleId}
-            counterId={titleCounterId}
             error={errors.title}
-            errorId={titleErrorId}
           />
           <ContentField
             value={content}
@@ -137,10 +127,7 @@ export function UpdateModal() {
               setContent(v);
               clearFieldError("content");
             }}
-            id={contentId}
-            counterId={contentCounterId}
             error={errors.content}
-            errorId={contentErrorId}
           />
           <AuthorSection
             authorName={authorName}
@@ -149,10 +136,13 @@ export function UpdateModal() {
               clearFieldError("author");
             }}
             isEditable={isAuthorEditable}
-            onToggle={() => setIsAuthorEditable((prev) => !prev)}
-            authorId={authorId}
+            onToggle={() => {
+              setIsAuthorEditable((prev) => {
+                if (prev) clearFieldError("author");
+                return !prev;
+              });
+            }}
             error={errors.author}
-            errorId={authorErrorId}
           />
         </div>
 
@@ -162,19 +152,7 @@ export function UpdateModal() {
             className="mt-6 rounded-lg border border-red-300 bg-red-50 p-4 text-sm text-red-700"
           >
             <p className="flex items-center gap-1.5 font-bold">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                className="h-5 w-5 shrink-0"
-                aria-hidden="true"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <ErrorIcon className="h-5 w-5 shrink-0" />
               Bitte korrigiere die folgenden Fehler:
             </p>
             <ul className="mt-1 list-disc pl-5">
