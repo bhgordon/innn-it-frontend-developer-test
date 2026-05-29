@@ -38,11 +38,16 @@ WCAG 2.2 AA was a primary focus throughout:
 - `role="alert"` for error summaries and success messages
 - `role="switch"` with `aria-checked` for the author toggle
 - Error states use icon + text + border color (not color alone)
+- Focus management on validation failure -- the first invalid field receives focus
 - `useId()` for stable, SSR-safe ID generation
+
+For accessibility design and implementation decisions, I borrowed heavily from one of my favorite talks on React forms by Kateryna Porshnieva called "Building Accessible Forms in React" -- I watched it a couple years ago and still refer back to it whenever I'm building forms in React. [Watch the talk here](https://www.youtube.com/watch?v=gxwJCF8dqh8).
 
 ## Tradeoffs / With More Time
 
 - No unit tests yet -- would prioritize testing validation logic and draft persistence
 - The close button is decorative per the spec (modal never closes), so it's hidden from assistive tech. In a real app it would need to be functional and accessible
-- No focus management on validation failure -- ideally the first invalid field would receive focus
 - Would consider extracting the success/error alert pattern into a shared component
+- The cancel confirmation uses `window.confirm` (browser default styling) -- would replace with a custom modal for a more polished UX
+- Would add clearer UX for draft management so users can see where their in-progress drafts are saved and easily return to them
+- Since these are updates to existing petitions, the title field could be a dropdown of the user's petitions rather than free text -- linking the update to its parent petition

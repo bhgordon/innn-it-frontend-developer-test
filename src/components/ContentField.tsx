@@ -1,16 +1,18 @@
-import { useId } from "react";
+import { type Ref, useId } from "react";
 import { ErrorIcon } from "./ErrorIcon";
 
 interface ContentFieldProps {
   value: string;
   onChange: (value: string) => void;
   error?: string;
+  ref?: Ref<HTMLTextAreaElement>;
 }
 
 export function ContentField({
   value,
   onChange,
   error,
+  ref,
 }: ContentFieldProps) {
   const id = useId();
   const counterId = useId();
@@ -21,10 +23,11 @@ export function ContentField({
 
   return (
     <div>
-      <label htmlFor={id} className="block text-lg font-bold text-neutral-900">
+      <label htmlFor={id} className="block text-lg font-medium text-neutral-900">
         Deine Neuigkeiten<span aria-hidden="true" className="ml-0.5 text-red-500">*</span>
       </label>
       <textarea
+        ref={ref}
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value.slice(0, 10000))}

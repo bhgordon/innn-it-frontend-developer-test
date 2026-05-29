@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { ErrorIcon } from "./ErrorIcon";
 import { TitleField } from "./TitleField";
 import { ContentField } from "./ContentField";
@@ -8,13 +8,19 @@ import { AuthorSection } from "./AuthorSection";
 
 export function UpdateModal() {
   const headingId = useId();
+  const titleRef = useRef<HTMLInputElement>(null);
+  const contentRef = useRef<HTMLTextAreaElement>(null);
+  const authorRef = useRef<HTMLInputElement>(null);
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [authorName, setAuthorName] = useState("");
   const [isAuthorEditable, setIsAuthorEditable] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState<{
+    text: string;
+    type: "save" | "publish";
+  } | null>(null);
 
   useEffect(() => {
     try {
@@ -23,10 +29,8 @@ export function UpdateModal() {
       const draft = JSON.parse(saved);
       if (draft.title) setTitle(draft.title);
       if (draft.content) setContent(draft.content);
-      if (draft.author) {
-        setAuthorName(draft.author);
-        setIsAuthorEditable(true);
-      }
+      if (draft.author) setAuthorName(draft.author);
+      if (draft.isAuthorEditable) setIsAuthorEditable(true);
     } catch { /* ignore corrupted data */ }
   }, []);
 
@@ -37,30 +41,43 @@ export function UpdateModal() {
       delete next[field];
       return next;
     });
-    setSuccessMessage("");
+    setSuccessMessage(null);
   }
 
   function handleSaveDraft() {
-    setSuccessMessage("");
+    setSuccessMessage(null);
     setErrors({});
 
     const data = {
       title: title.trim(),
       content: content.trim(),
       author: authorName.trim(),
+      isAuthorEditable,
       savedAt: new Date().toISOString(),
     };
 
     try {
       localStorage.setItem("petition-update-draft", JSON.stringify(data));
-      setSuccessMessage("Entwurf wurde erfolgreich gespeichert.");
+      setSuccessMessage({ text: "Entwurf wurde erfolgreich gespeichert.", type: "save" });
     } catch {
       setErrors({ save: "Entwurf konnte nicht gespeichert werden." });
     }
   }
 
+  function handleCancel() {
+    if (!window.confirm("Möchtest du wirklich abbrechen? Alle Änderungen gehen verloren.")) return;
+
+    setTitle("");
+    setContent("");
+    setAuthorName("");
+    setIsAuthorEditable(false);
+    setErrors({});
+    setSuccessMessage(null);
+    localStorage.removeItem("petition-update-draft");
+  }
+
   function handlePublish() {
-    setSuccessMessage("");
+    setSuccessMessage(null);
     const newErrors: Record<string, string> = {};
 
     if (!title.trim()) {
@@ -74,9 +91,14 @@ export function UpdateModal() {
     }
 
     setErrors(newErrors);
-    if (Object.keys(newErrors).length > 0) return;
+    if (Object.keys(newErrors).length > 0) {
+      if (newErrors.title) titleRef.current?.focus();
+      else if (newErrors.content) contentRef.current?.focus();
+      else if (newErrors.author) authorRef.current?.focus();
+      return;
+    }
 
-    setSuccessMessage("Update wurde erfolgreich veröffentlicht.");
+    setSuccessMessage({ text: "Update wurde erfolgreich veröffentlicht.", type: "publish" });
   }
 
   return (
@@ -107,13 +129,14 @@ export function UpdateModal() {
         </svg>
       </button>
 
-      <h2 id={headingId} className="text-2xl font-bold text-neutral-900">
+      <h2 id={headingId} className="text-2xl font-medium text-neutral-900">
         Neues Update erstellen
       </h2>
 
       <form onSubmit={(e) => e.preventDefault()}>
         <div className="mt-6 space-y-6">
           <TitleField
+            ref={titleRef}
             value={title}
             onChange={(v) => {
               setTitle(v);
@@ -122,6 +145,7 @@ export function UpdateModal() {
             error={errors.title}
           />
           <ContentField
+            ref={contentRef}
             value={content}
             onChange={(v) => {
               setContent(v);
@@ -130,6 +154,7 @@ export function UpdateModal() {
             error={errors.content}
           />
           <AuthorSection
+            ref={authorRef}
             authorName={authorName}
             onAuthorChange={(v) => {
               setAuthorName(v);
@@ -164,24 +189,25 @@ export function UpdateModal() {
           </div>
         )}
 
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-end">
           <button
             type="button"
-            className="w-full rounded-full border-2 border-violet-300 px-6 py-2.5 text-center font-medium text-neutral-900 transition-colors hover:bg-violet-100 sm:w-auto"
+            onClick={handleCancel}
+            className="w-full rounded-full border border-neutral-900 px-6 py-2.5 text-center font-medium text-neutral-900 transition-colors hover:bg-violet-100 sm:w-auto"
           >
             Abbrechen
           </button>
           <button
             type="button"
             onClick={handleSaveDraft}
-            className="w-full rounded-full bg-violet-300 px-6 py-2.5 text-center font-medium text-neutral-900 transition-colors hover:bg-violet-400 sm:w-auto"
+            className="w-full rounded-full border border-neutral-900 bg-violet-300 px-6 py-2.5 text-center font-medium text-neutral-900 transition-colors hover:bg-violet-400 sm:w-auto"
           >
             Entwurf speichern
           </button>
           <button
             type="button"
             onClick={handlePublish}
-            className="w-full rounded-full bg-orange-500 px-6 py-2.5 text-center font-medium text-white transition-colors hover:bg-orange-600 sm:w-auto"
+            className="w-full rounded-full border border-neutral-900 bg-orange-500 px-6 py-2.5 text-center font-medium text-neutral-900 transition-colors hover:bg-orange-600 sm:w-auto"
           >
             Update veröffentlichen
           </button>
@@ -190,28 +216,52 @@ export function UpdateModal() {
         {successMessage && (
           <div
             role="alert"
-            className="mt-4 flex items-center justify-between rounded-lg border border-green-300 bg-green-50 p-4 text-sm text-green-700"
+            className={`mt-4 flex items-center justify-between rounded-lg border p-4 text-sm ${
+              successMessage.type === "save"
+                ? "border-violet-300 bg-violet-50 text-violet-700"
+                : "border-green-300 bg-green-50 text-green-700"
+            }`}
           >
             <p className="flex items-center gap-1.5">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                className="h-5 w-5 shrink-0"
-                aria-hidden="true"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              {successMessage}
+              {successMessage.type === "save" ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  className="h-5 w-5 shrink-0"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 2c-1.716 0-3.408.106-5.07.31C3.806 2.45 3 3.414 3 4.517V17.25a.75.75 0 0 0 1.075.676L10 15.082l5.925 2.844A.75.75 0 0 0 17 17.25V4.517c0-1.103-.806-2.068-1.93-2.207A41.403 41.403 0 0 0 10 2Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  className="h-5 w-5 shrink-0"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              )}
+              {successMessage.text}
             </p>
             <button
               type="button"
-              onClick={() => setSuccessMessage("")}
-              className="ml-4 shrink-0 rounded-full p-0.5 text-green-700 hover:text-green-900 transition-colors"
+              onClick={() => setSuccessMessage(null)}
+              className={`ml-4 shrink-0 rounded-full p-0.5 transition-colors ${
+                successMessage.type === "save"
+                  ? "text-violet-700 hover:text-violet-900"
+                  : "text-green-700 hover:text-green-900"
+              }`}
               aria-label="Meldung schließen"
             >
               <svg

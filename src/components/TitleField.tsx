@@ -1,16 +1,18 @@
-import { useId } from "react";
+import { type Ref, useId } from "react";
 import { ErrorIcon } from "./ErrorIcon";
 
 interface TitleFieldProps {
   value: string;
   onChange: (value: string) => void;
   error?: string;
+  ref?: Ref<HTMLInputElement>;
 }
 
 export function TitleField({
   value,
   onChange,
   error,
+  ref,
 }: TitleFieldProps) {
   const id = useId();
   const counterId = useId();
@@ -21,10 +23,11 @@ export function TitleField({
 
   return (
     <div>
-      <label htmlFor={id} className="block text-lg font-bold text-neutral-900">
+      <label htmlFor={id} className="block text-lg font-medium text-neutral-900">
         Titel<span aria-hidden="true" className="ml-0.5 text-red-500">*</span>
       </label>
       <input
+        ref={ref}
         id={id}
         type="text"
         value={value}
