@@ -1,9 +1,22 @@
 "use client";
 
-import { useId } from "react";
+import { useId, useState } from "react";
+import { TitleField } from "./TitleField";
+import { ContentField } from "./ContentField";
+import { AuthorSection } from "./AuthorSection";
 
 export function UpdateModal() {
   const headingId = useId();
+  const titleId = useId();
+  const titleCounterId = useId();
+  const contentId = useId();
+  const contentCounterId = useId();
+  const authorId = useId();
+
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [authorName, setAuthorName] = useState("");
+  const [isAuthorEditable, setIsAuthorEditable] = useState(false);
 
   return (
     <div
@@ -38,6 +51,28 @@ export function UpdateModal() {
       </h2>
 
       <form onSubmit={(e) => e.preventDefault()}>
+        <div className="mt-6 space-y-6">
+          <TitleField
+            value={title}
+            onChange={setTitle}
+            id={titleId}
+            counterId={titleCounterId}
+          />
+          <ContentField
+            value={content}
+            onChange={setContent}
+            id={contentId}
+            counterId={contentCounterId}
+          />
+          <AuthorSection
+            authorName={authorName}
+            onAuthorChange={setAuthorName}
+            isEditable={isAuthorEditable}
+            onToggle={() => setIsAuthorEditable((prev) => !prev)}
+            authorId={authorId}
+          />
+        </div>
+
         <div className="mt-8 flex flex-wrap gap-3">
           <button
             type="button"
