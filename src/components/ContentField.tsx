@@ -21,7 +21,7 @@ export function ContentField({
 
   return (
     <div>
-      <label htmlFor={id} className="block text-lg font-bold text-neutral-900">
+      <label htmlFor={id} className="block text-lg font-medium text-neutral-900">
         Deine Neuigkeiten<span aria-hidden="true" className="ml-0.5 text-red-500">*</span>
       </label>
       <textarea

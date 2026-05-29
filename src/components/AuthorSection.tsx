@@ -21,7 +21,7 @@ export function AuthorSection({
   return (
     <div>
       <div className="flex items-center justify-between">
-        <span className="text-lg font-bold text-neutral-900">Absender</span>
+        <span className="text-lg font-medium text-neutral-900">Absender</span>
         <button
           type="button"
           role="switch"
@@ -52,7 +52,7 @@ export function AuthorSection({
 
       <label
         htmlFor={authorId}
-        className="mt-4 block text-sm font-bold text-neutral-900"
+        className="mt-4 block text-sm font-medium text-neutral-900"
       >
         Absender
         {isEditable && (
@@ -64,7 +64,7 @@ export function AuthorSection({
         type="text"
         value={authorName}
         onChange={(e) => onAuthorChange(e.target.value)}
-        readOnly={!isEditable}
+        disabled={!isEditable}
         placeholder="Petra Petitionsstarterin"
         aria-required={isEditable}
         aria-invalid={error ? "true" : undefined}
@@ -72,7 +72,7 @@ export function AuthorSection({
         className={`mt-1 w-full rounded-lg px-4 py-2.5 outline-none transition-colors focus:ring-2 focus:ring-violet-300 ${
           isEditable
             ? `border-2 bg-white text-neutral-900 ${error ? "border-red-500" : "border-neutral-800"}`
-            : "bg-neutral-200 text-neutral-500"
+            : "border border-neutral-800 bg-neutral-200 text-neutral-500"
         }`}
       />
       {error && (
