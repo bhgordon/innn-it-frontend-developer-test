@@ -63,3 +63,4 @@ For accessibility design and implementation decisions, I borrowed heavily from o
 - The cancel confirmation uses `window.confirm` (browser default styling). I would replace this with a custom modal for a more polished UX.
 - Would add clearer UX for draft management so users can see where their in-progress drafts are saved and easily return to them.
 - Since these are updates to existing petitions, the title field could be a dropdown of the user's petitions rather than free text, linking the update to its parent petition.
+- I implemented ARIA best practices throughout, but proper screen reader testing takes hours of hands-on work with VoiceOver/NVDA. Given more time, I would do thorough manual testing to make sure the form works seamlessly with assistive technology, not just that the markup is correct.
