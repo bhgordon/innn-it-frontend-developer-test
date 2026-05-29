@@ -23,10 +23,8 @@ export function UpdateModal() {
       const draft = JSON.parse(saved);
       if (draft.title) setTitle(draft.title);
       if (draft.content) setContent(draft.content);
-      if (draft.author) {
-        setAuthorName(draft.author);
-        setIsAuthorEditable(true);
-      }
+      if (draft.author) setAuthorName(draft.author);
+      if (draft.isAuthorEditable) setIsAuthorEditable(true);
     } catch { /* ignore corrupted data */ }
   }, []);
 
@@ -48,6 +46,7 @@ export function UpdateModal() {
       title: title.trim(),
       content: content.trim(),
       author: authorName.trim(),
+      isAuthorEditable,
       savedAt: new Date().toISOString(),
     };
 
@@ -57,6 +56,18 @@ export function UpdateModal() {
     } catch {
       setErrors({ save: "Entwurf konnte nicht gespeichert werden." });
     }
+  }
+
+  function handleCancel() {
+    if (!window.confirm("Möchtest du wirklich abbrechen? Alle Änderungen gehen verloren.")) return;
+
+    setTitle("");
+    setContent("");
+    setAuthorName("");
+    setIsAuthorEditable(false);
+    setErrors({});
+    setSuccessMessage("");
+    localStorage.removeItem("petition-update-draft");
   }
 
   function handlePublish() {
@@ -167,6 +178,7 @@ export function UpdateModal() {
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
           <button
             type="button"
+            onClick={handleCancel}
             className="w-full rounded-full border-2 border-violet-300 px-6 py-2.5 text-center font-medium text-neutral-900 transition-colors hover:bg-violet-100 sm:w-auto"
           >
             Abbrechen
