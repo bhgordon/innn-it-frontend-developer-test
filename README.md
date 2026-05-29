@@ -31,15 +31,15 @@ npm run cypress:open  # interactive UI
 
 ## Technical Decisions
 
-**Component structure.** Each form section (TitleField, ContentField, AuthorSection) is its own component. They own their internal wiring (IDs, label/input associations) and receive only value, onChange, and error from the parent. UpdateModal handles state and validation logic.
+**Component structure:** Each form section (TitleField, ContentField, AuthorSection) is its own component. They own their internal wiring (IDs, label/input associations) and receive only value, onChange, and error from the parent. UpdateModal handles state and validation logic.
 
-**Fonts.** Soehne is self-hosted as woff2 files rather than loaded from the external CSS endpoint. This avoids a runtime dependency on an external server and gives us `font-display: swap` control.
+**Fonts:** Soehne is self-hosted as woff2 files rather than loaded from the external CSS endpoint. This avoids a runtime dependency on an external server and gives us `font-display: swap` control.
 
-**Draft persistence.** Drafts are saved to localStorage on "Entwurf speichern" and restored on page load via `useEffect` to avoid SSR hydration mismatches. The author toggle state is persisted alongside the form data.
+**Draft persistence:** Drafts are saved to localStorage on "Entwurf speichern" and restored on page load via `useEffect` to avoid SSR hydration mismatches. The author toggle state is persisted alongside the form data.
 
-**Validation.** Required field validation runs on "Update veröffentlichen". Save draft stores data without validation. Errors are cleared per-field as the user types, and the first invalid field receives focus on submission.
+**Validation:** Required field validation runs on "Update veröffentlichen". Save draft stores data without validation. Errors are cleared per-field as the user types, and the first invalid field receives focus on submission.
 
-**Cancel flow.** "Abbrechen" shows a confirmation dialog before clearing the form and removing the saved draft from localStorage.
+**Cancel flow:** "Abbrechen" shows a confirmation dialog before clearing the form and removing the saved draft from localStorage.
 
 ## Accessibility
 
@@ -54,7 +54,7 @@ WCAG 2.2 AA was a primary focus throughout:
 - Focus management on validation failure, moving focus to the first invalid field
 - `useId()` for stable, SSR-safe ID generation
 
-For accessibility design and implementation decisions, I borrowed heavily from one of my favorite talks on React forms by Kateryna Porshnieva called "Building Accessible Forms in React". I watched it a couple years ago and still refer back to it whenever I'm building forms in React. [Watch the talk here](https://www.youtube.com/watch?v=gxwJCF8dqh8).
+For accessibility design and implementation decisions, I borrowed heavily from one of my favorite talks on React forms by Kateryna Porshnieva called "Building Accessible Forms in React". I watched it a couple years ago and still refer back to it whenever I'm building forms in React. <a href="https://www.youtube.com/watch?v=gxwJCF8dqh8" target="_blank">Watch the talk here</a>.
 
 ## Tradeoffs / With More Time
 
