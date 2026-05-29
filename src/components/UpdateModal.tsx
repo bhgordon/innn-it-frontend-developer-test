@@ -186,24 +186,24 @@ export function UpdateModal() {
           </div>
         )}
 
-        <div className="mt-8 flex flex-wrap gap-3">
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
           <button
             type="button"
-            className="rounded-full border-2 border-violet-300 px-6 py-2.5 font-medium text-neutral-900 transition-colors hover:bg-violet-100"
+            className="w-full rounded-full border-2 border-violet-300 px-6 py-2.5 text-center font-medium text-neutral-900 transition-colors hover:bg-violet-100 sm:w-auto"
           >
             Abbrechen
           </button>
           <button
             type="button"
             onClick={handleSaveDraft}
-            className="rounded-full bg-violet-300 px-6 py-2.5 font-medium text-neutral-900 transition-colors hover:bg-violet-400"
+            className="w-full rounded-full bg-violet-300 px-6 py-2.5 text-center font-medium text-neutral-900 transition-colors hover:bg-violet-400 sm:w-auto"
           >
             Entwurf speichern
           </button>
           <button
             type="button"
             onClick={handlePublish}
-            className="rounded-full bg-orange-500 px-6 py-2.5 font-medium text-white transition-colors hover:bg-orange-600"
+            className="w-full rounded-full bg-orange-500 px-6 py-2.5 text-center font-medium text-white transition-colors hover:bg-orange-600 sm:w-auto"
           >
             Update veröffentlichen
           </button>

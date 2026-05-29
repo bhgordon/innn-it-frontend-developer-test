@@ -58,7 +58,7 @@ export function TitleField({
         ) : (
           <span />
         )}
-        <p id={counterId} className="text-neutral-500">
+        <p id={counterId} className="shrink-0 ps-2 text-neutral-500">
           {value.length} / 100 Zeichen
         </p>
       </div>
