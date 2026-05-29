@@ -32,7 +32,7 @@ export function ContentField({
         placeholder="Bitte schreibe ein paar Worte zu deinem Update."
         rows={6}
         aria-required="true"
-        aria-invalid={!!error}
+        aria-invalid={error ? "true" : undefined}
         aria-describedby={describedBy}
         className={`mt-2 w-full resize-y rounded-lg border-2 px-4 py-2.5 text-neutral-900 outline-none focus:ring-2 focus:ring-violet-300 ${
           error ? "border-red-500" : "border-neutral-800"

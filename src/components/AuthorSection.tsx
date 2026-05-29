@@ -66,7 +66,7 @@ export function AuthorSection({
         readOnly={!isEditable}
         placeholder="Petra Petitionsstarterin"
         aria-required={isEditable}
-        aria-invalid={!!error}
+        aria-invalid={error ? "true" : undefined}
         aria-describedby={error ? errorId : undefined}
         className={`mt-1 w-full rounded-lg px-4 py-2.5 outline-none transition-colors focus:ring-2 focus:ring-violet-300 ${
           isEditable
