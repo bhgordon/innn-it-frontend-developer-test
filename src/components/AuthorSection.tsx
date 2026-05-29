@@ -10,6 +10,8 @@ interface AuthorSectionProps {
   ref?: Ref<HTMLInputElement>;
 }
 
+// Author section with a toggle to enable/disable editing.
+// When disabled, the input shows a placeholder name and can't be interacted with.
 export function AuthorSection({
   authorName,
   onAuthorChange,
@@ -57,6 +59,7 @@ export function AuthorSection({
         className="mt-4 block text-sm font-medium text-neutral-900"
       >
         Absender
+        {/* Only show required asterisk when toggle is on */}
         {isEditable && (
           <span aria-hidden="true" className="ml-0.5 text-red-500">*</span>
         )}

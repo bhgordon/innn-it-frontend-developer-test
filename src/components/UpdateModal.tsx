@@ -6,8 +6,13 @@ import { TitleField } from "./TitleField";
 import { ContentField } from "./ContentField";
 import { AuthorSection } from "./AuthorSection";
 
+// Parent component that owns all form state and validation logic.
+// Each form section (TitleField, ContentField, AuthorSection) is a separate
+// component that handles its own IDs and label/input wiring internally.
 export function UpdateModal() {
   const headingId = useId();
+
+  // Refs for focus management — on validation failure, we focus the first invalid field
   const titleRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const authorRef = useRef<HTMLInputElement>(null);
@@ -17,11 +22,14 @@ export function UpdateModal() {
   const [authorName, setAuthorName] = useState("");
   const [isAuthorEditable, setIsAuthorEditable] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  // Track message type so we can style save (violet) differently from publish (green)
   const [successMessage, setSuccessMessage] = useState<{
     text: string;
     type: "save" | "publish";
   } | null>(null);
 
+  // Restore any previously saved draft from localStorage on mount.
+  // Runs in useEffect to avoid SSR hydration mismatches.
   useEffect(() => {
     try {
       const saved = localStorage.getItem("petition-update-draft");
@@ -34,6 +42,7 @@ export function UpdateModal() {
     } catch { /* ignore corrupted data */ }
   }, []);
 
+  // Clear a single field's error as the user types, so they get immediate feedback
   function clearFieldError(field: string) {
     setErrors((prev) => {
       if (!prev[field]) return prev;
@@ -44,6 +53,7 @@ export function UpdateModal() {
     setSuccessMessage(null);
   }
 
+  // Save draft to localStorage without validation
   function handleSaveDraft() {
     setSuccessMessage(null);
     setErrors({});
@@ -64,6 +74,7 @@ export function UpdateModal() {
     }
   }
 
+  // Confirm before clearing all form state and removing the saved draft
   function handleCancel() {
     if (!window.confirm("Möchtest du wirklich abbrechen? Alle Änderungen gehen verloren.")) return;
 
@@ -76,6 +87,7 @@ export function UpdateModal() {
     localStorage.removeItem("petition-update-draft");
   }
 
+  // Validate required fields and focus the first invalid one if there are errors
   function handlePublish() {
     setSuccessMessage(null);
     const newErrors: Record<string, string> = {};
@@ -86,6 +98,7 @@ export function UpdateModal() {
     if (!content.trim()) {
       newErrors.content = "Bitte schreibe ein paar Worte zu deinem Update.";
     }
+    // Author is only required when the toggle is on
     if (isAuthorEditable && !authorName.trim()) {
       newErrors.author = "Bitte gib einen Absender ein.";
     }
@@ -108,6 +121,7 @@ export function UpdateModal() {
       aria-labelledby={headingId}
       className="relative w-full max-w-[640px] rounded-2xl bg-white p-8 shadow-xl sm:p-10"
     >
+      {/* Close button is decorative per spec — hidden from assistive tech */}
       <button
         type="button"
         aria-hidden="true"
@@ -161,6 +175,7 @@ export function UpdateModal() {
               clearFieldError("author");
             }}
             isEditable={isAuthorEditable}
+            // When toggling off, clear any author error since the field is no longer required
             onToggle={() => {
               setIsAuthorEditable((prev) => {
                 if (prev) clearFieldError("author");
