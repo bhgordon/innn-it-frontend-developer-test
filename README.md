@@ -54,12 +54,11 @@ WCAG 2.2 AA was a primary focus throughout:
 - Focus management on validation failure, moving focus to the first invalid field
 - `useId()` for stable, SSR-safe ID generation
 
-For accessibility design and implementation decisions, I borrowed heavily from one of my favorite talks on React forms by Kateryna Porshnieva called "Building Accessible Forms in React". I watched it a couple years ago and still refer back to it whenever I'm building forms in React. <a href="https://www.youtube.com/watch?v=gxwJCF8dqh8" target="_blank">Watch the talk here</a>.
+For accessibility design and implementation decisions, I borrowed heavily from one of my favorite talks on React forms by [Kateryna Porshnieva](https://www.kateryna.codes/) called "Building Accessible Forms in React". I watched it a couple years ago and still refer back to it whenever I'm building forms in React. [Watch the talk here](https://www.youtube.com/watch?v=gxwJCF8dqh8).
 
 ## Tradeoffs / With More Time
 
 - The close button is decorative per the spec (modal never closes), so it's hidden from assistive tech. In a real app it would need to be functional and accessible.
-- Would consider extracting the success/error alert pattern into a shared component.
 - The cancel confirmation uses `window.confirm` (browser default styling). I would replace this with a custom modal for a more polished UX.
 - Would add clearer UX for draft management so users can see where their in-progress drafts are saved and easily return to them.
 - Since these are updates to existing petitions, the title field could be a dropdown of the user's petitions rather than free text, linking the update to its parent petition.
