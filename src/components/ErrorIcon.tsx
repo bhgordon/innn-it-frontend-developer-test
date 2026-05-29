@@ -1,3 +1,4 @@
+// Shared error icon used across form fields and the error summary
 export function ErrorIcon({ className }: { className?: string }) {
   return (
     <svg

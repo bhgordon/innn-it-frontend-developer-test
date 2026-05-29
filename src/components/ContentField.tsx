@@ -8,6 +8,7 @@ interface ContentFieldProps {
   ref?: Ref<HTMLTextAreaElement>;
 }
 
+// Same pattern as TitleField — owns its own IDs, receives only data props from parent
 export function ContentField({
   value,
   onChange,

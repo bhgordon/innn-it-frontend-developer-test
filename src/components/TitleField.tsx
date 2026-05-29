@@ -8,6 +8,8 @@ interface TitleFieldProps {
   ref?: Ref<HTMLInputElement>;
 }
 
+// Each field component owns its own IDs (via useId) for label/input/error associations.
+// The parent only passes value, onChange, error, and a ref for focus management.
 export function TitleField({
   value,
   onChange,
@@ -17,6 +19,7 @@ export function TitleField({
   const id = useId();
   const counterId = useId();
   const errorId = useId();
+  // Link the input to both the character counter and the error message (if present)
   const describedBy = [counterId, error ? errorId : undefined]
     .filter(Boolean)
     .join(" ");
