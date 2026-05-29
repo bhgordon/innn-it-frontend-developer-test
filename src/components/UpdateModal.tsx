@@ -149,7 +149,12 @@ export function UpdateModal() {
               clearFieldError("author");
             }}
             isEditable={isAuthorEditable}
-            onToggle={() => setIsAuthorEditable((prev) => !prev)}
+            onToggle={() => {
+              setIsAuthorEditable((prev) => {
+                if (prev) clearFieldError("author");
+                return !prev;
+              });
+            }}
             authorId={authorId}
             error={errors.author}
             errorId={authorErrorId}
